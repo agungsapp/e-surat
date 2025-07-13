@@ -1,0 +1,34 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    line-height: 1.6;
+}
+.center {
+    text-align: center;
+}
+.bold {
+    font-weight: bold;
+}
+.underline {
+    text-decoration: underline;
+}
+.content {
+    margin-top: 20px;
+}
+.table {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.table td {
+    padding: 2px 4px;
+    vertical-align: top;
+}
+.signature {
+    margin-top: 40px;
+    float: right;
+    text-align: left;
+}
+
+* {
+    font-size: 12px;
+}

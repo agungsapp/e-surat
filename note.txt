@@ -1,0 +1,6 @@
+progres terakhir sampai di sku skbm dan sktm . cuman belum di test sih kalau semuanya di buat gimana 
+
+progress terakhir , sudah clear semua login aman , sisa penyesuaian menu untuk ppembuat crud terkait data di home page
+
+masalah : 
+bug after redirect halaman putih .
