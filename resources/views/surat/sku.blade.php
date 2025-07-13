@@ -108,7 +108,8 @@
 						</tr>
 						<tr>
 								<td>Tempat / Tgl. Lahir</td>
-								<td>: {{ $penduduk->tempat_lahir }}, {{ $penduduk->tanggal_lahir }}</td>
+								<td>: {{ $penduduk->tempat_lahir }},
+										{{ \Carbon\Carbon::parse($penduduk->tanggal_lahir)->translatedFormat('d F Y') }}</td>
 						</tr>
 						<tr>
 								<td>Agama</td>

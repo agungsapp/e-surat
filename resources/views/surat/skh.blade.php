@@ -99,15 +99,16 @@
 				<table class="table">
 						<tr>
 								<td>Nama</td>
-								<td style="font-weight: bold">: {{ $data['Nama'] }}</td>
+								<td style="font-weight: bold">: {{ $penduduk->nama_lengkap }}</td>
 						</tr>
 						<tr>
 								<td>NIK</td>
-								<td>: {{ $data['NIK'] }}</td>
+								<td>: {{ $penduduk->tempat_lahir }}</td>
 						</tr>
 						<tr>
 								<td>Tempat / Tgl. Lahir</td>
-								<td>: {{ $data['TempatLahir'] }}, {{ $data['TanggalLahir'] }}</td>
+								<td>: {{ $penduduk->tempat_lahir }},
+										{{ \Carbon\Carbon::parse($penduduk->tanggal_lahir)->translatedFormat('d F Y') }}</td>
 						</tr>
 						<tr>
 								<td>Umur</td>
@@ -119,15 +120,15 @@
 						</tr> --}}
 						<tr>
 								<td>Jenis Kelamin</td>
-								<td>: {{ $data['JenisKelamin'] }}</td>
+								<td>: {{ $penduduk->jenis_kelamin == 'L' ? 'Laki - Laki' : 'Perempuan' }}</td>
 						</tr>
 						<tr>
 								<td>Pekerjaan</td>
-								<td>: {{ $data['Pekerjaan'] }}</td>
+								<td>: {{ $penduduk->pekerjaan }}</td>
 						</tr>
 						<tr>
 								<td>Alamat</td>
-								<td>: {{ $data['Alamat'] }}</td>
+								<td>: {{ $penduduk->alamat }}</td>
 						</tr>
 				</table>
 
@@ -146,7 +147,7 @@
 								<td style="width: 30%; text-align: center;">
 										<div style="margin-bottom: 1rem; text-align: left;">
 												<span>Dikeluarkan di: Juku Batu</span><br>
-												<span>Pada Tanggal: {{ $data['TanggalPenerbitan'] }}</span><br><br>
+												<span>Pada Tanggal: {{ $tanggalPenerbitan }}</span><br><br>
 												<span>Kepala Kampung Juku Batu,</span>
 										</div>
 										<div style="text-align: center;">
