@@ -4,6 +4,7 @@ namespace App\Livewire\User;
 
 use App\Models\Surat;
 use App\Models\Permohonan;
+use App\Models\Penduduk;
 use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,28 +24,20 @@ class UserPengajuanSuratPage extends Component
         $this->surat = Surat::findOrFail($id);
         $this->fields = is_string($this->surat->data) ? json_decode($this->surat->data, true) : $this->surat->data;
 
+        // Inisialisasi formData berdasarkan jenis surat
+        $this->formData = [];
         if ($this->surat->kode === 'SKTM') {
-            // Logika eksplisit untuk SKTM
-            $this->fields = [
-                'OrangTua' => ['Nama', 'NIK', 'TempatLahir', 'TanggalLahir', 'Agama', 'JenisKelamin', 'Pekerjaan', 'Alamat'],
-                'Anak' => ['Nama', 'NIK', 'TempatLahir', 'TanggalLahir', 'Agama', 'JenisKelamin', 'Pekerjaan', 'AlamatKTP'],
-                'Penghasilan' => '',
-                'TanggalPenerbitan' => '',
-            ];
             $this->formData = [
-                'OrangTua' => [],
-                'Anak' => [],
+                'NIKAnak' => '',
                 'Penghasilan' => '',
-                'TanggalPenerbitan' => '',
             ];
-            foreach ($this->fields['OrangTua'] as $field) {
-                $this->formData['OrangTua'][$field] = '';
-            }
-            foreach ($this->fields['Anak'] as $field) {
-                $this->formData['Anak'][$field] = '';
-            }
+        } elseif ($this->surat->kode === 'SKL') {
+            $this->formData = [
+                'NIKAnak' => '',
+                'NIKAyah' => '',
+                'NIKIbu' => '',
+            ];
         } else {
-            $this->formData = [];
             foreach ($this->fields as $key => $value) {
                 if (is_array($value)) {
                     $this->formData[$key] = [];
@@ -52,7 +45,7 @@ class UserPengajuanSuratPage extends Component
                         $this->formData[$key][$subKey] = '';
                     }
                 } else {
-                    $this->formData[$value] = '';
+                    $this->formData[$key] = '';
                 }
             }
         }
@@ -60,40 +53,76 @@ class UserPengajuanSuratPage extends Component
 
     public function submit()
     {
-        // Validasi spesifik untuk struktur formData
+        // Aturan validasi
         $validationRules = [
             'whatsapp_number' => 'nullable|string',
         ];
 
         if ($this->surat->kode === 'SKTM') {
-            foreach ($this->fields['OrangTua'] as $field) {
-                $validationRules["formData.OrangTua.{$field}"] = 'required';
-            }
-            foreach ($this->fields['Anak'] as $field) {
-                $validationRules["formData.Anak.{$field}"] = 'required';
-            }
-            $validationRules['formData.Penghasilan'] = 'required|numeric';
-            $validationRules['formData.TanggalPenerbitan'] = 'required|date';
+            $validationRules['formData.NIKAnak'] = [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!Penduduk::where('nik', $value)->exists()) {
+                        $fail('NIK anak tidak ditemukan di database penduduk.');
+                    }
+                    if (Auth::guard('penduduk')->check() && $value === Auth::guard('penduduk')->user()->nik) {
+                        $fail('NIK anak tidak boleh sama dengan NIK pemohon.');
+                    }
+                },
+            ];
+            $validationRules['formData.Penghasilan'] = 'required|numeric|min:0';
+        } elseif ($this->surat->kode === 'SKL') {
+            $validationRules['formData.NIKAnak'] = [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!Penduduk::where('nik', $value)->exists()) {
+                        $fail('NIK anak tidak ditemukan di database penduduk.');
+                    }
+                },
+            ];
+            $validationRules['formData.NIKAyah'] = [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!Penduduk::where('nik', $value)->exists()) {
+                        $fail('NIK ayah tidak ditemukan di database penduduk.');
+                    }
+                    if ($value === $this->formData['NIKAnak']) {
+                        $fail('NIK ayah tidak boleh sama dengan NIK anak.');
+                    }
+                    if (Auth::guard('penduduk')->check() && $value === Auth::guard('penduduk')->user()->nik) {
+                        $fail('NIK ayah tidak boleh sama dengan NIK pemohon.');
+                    }
+                },
+            ];
+            $validationRules['formData.NIKIbu'] = [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!Penduduk::where('nik', $value)->exists()) {
+                        $fail('NIK ibu tidak ditemukan di database penduduk.');
+                    }
+                    if ($value === $this->formData['NIKAnak']) {
+                        $fail('NIK ibu tidak boleh sama dengan NIK anak.');
+                    }
+                    if ($value === $this->formData['NIKAyah']) {
+                        $fail('NIK ibu tidak boleh sama dengan NIK ayah.');
+                    }
+                },
+            ];
         } else {
-            // Validasi dinamis untuk surat lain
             foreach ($this->fields as $key => $value) {
                 if (is_array($value)) {
                     foreach ($value as $subKey => $subValue) {
                         if (stripos($subKey, 'Penghasilan') !== false) {
-                            $validationRules["formData.{$key}.{$subKey}"] = 'required|numeric';
+                            $validationRules["formData.{$key}.{$subKey}"] = 'required|numeric|min:0';
                         } else {
                             $validationRules["formData.{$key}.{$subKey}"] = 'required';
                         }
                     }
                 } elseif (is_string($value) && stripos($value, 'Penghasilan') !== false) {
-                    $validationRules["formData.{$value}"] = 'required|numeric';
+                    $validationRules["formData.{$value}"] = 'required|numeric|min:0';
                 } elseif (is_string($value)) {
                     $validationRules["formData.{$value}"] = 'required';
                 }
-            }
-            // Validasi khusus untuk TanggalPenerbitan jika ada
-            if (isset($this->fields['TanggalPenerbitan'])) {
-                $validationRules['formData.TanggalPenerbitan'] = 'required|date';
             }
         }
 

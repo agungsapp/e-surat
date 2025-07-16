@@ -6,7 +6,8 @@
 								<div class="row d-flex justify-content-center text-center">
 										<div class="col-lg-8">
 												<h1>Pengajuan Surat - {{ $surat->nama }}</h1>
-												<p class="mb-0">Isi formulir di bawah ini untuk mengajukan surat {{ $surat->nama }}.</p>
+												<p class="mb-0">Isi formulir di bawah ini untuk mengajukan surat {{ $surat->nama }}. Pastikan NIK sesuai
+														dengan data di database penduduk.</p>
 										</div>
 								</div>
 						</div>
@@ -37,51 +38,69 @@
 										<form wire:submit.prevent="submit" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
 												<div class="row gy-4">
 														@if ($surat->kode === 'SKTM')
-																<h4>Data Orang Tua</h4>
-																@foreach ($fields['OrangTua'] as $field)
-																		<div class="col-md-6">
-																				<label
-																						class="form-label">{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $field)) }}</label>
-																				<input type="{{ str_contains(strtolower($field), 'tanggal') ? 'date' : 'text' }}"
-																						wire:model="formData.OrangTua.{{ $field }}" class="form-control"
-																						placeholder="{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $field)) }}"
-																						required>
-																				@error("formData.OrangTua.{$field}")
-																						<span class="text-danger">{{ $message }}</span>
-																		@endif
-														</div>
-														@endforeach
-
-														<h4>Data Anak</h4>
-														@foreach ($fields['Anak'] as $field)
+																<h4>Data Pemohon</h4>
 																<div class="col-md-6">
-																		<label
-																				class="form-label">{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $field)) }}</label>
-																		<input type="{{ str_contains(strtolower($field), 'tanggal') ? 'date' : 'text' }}"
-																				wire:model="formData.Anak.{{ $field }}" class="form-control"
-																				placeholder="{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $field)) }}"
+																		<label class="form-label">NIK Pemohon</label>
+																		<input type="text" class="form-control"
+																				value="{{ Auth::guard('penduduk')->check() ? Auth::guard('penduduk')->user()->nik : '' }}" readonly
 																				required>
-																		@error("formData.Anak.{$field}")
+																		@error('formData.NIKPemohon')
 																				<span class="text-danger">{{ $message }}</span>
-																@endif
-												</div>
-												@endforeach
-
-												<div class="col-md-6">
-														<label class="form-label">Penghasilan</label>
-														<input type="number" wire:model="formData.Penghasilan" class="form-control"
-																placeholder="Masukkan penghasilan (angka)" required step="0.01" min="0">
-														@error('formData.Penghasilan')
-																<span class="text-danger">{{ $message }}</span>
-																@endif
-														</div>
-
-														<div class="col-md-6">
-																<label class="form-label">Tanggal Penerbitan</label>
-																<input type="date" wire:model="formData.TanggalPenerbitan" class="form-control" required>
-																@error('formData.TanggalPenerbitan')
-																		<span class="text-danger">{{ $message }}</span>
-																		@endif
+																		@enderror
+																</div>
+																<h4>Data Anak</h4>
+																<div class="col-md-6">
+																		<label class="form-label">NIK Anak</label>
+																		<input type="text" wire:model="formData.NIKAnak" class="form-control"
+																				placeholder="Masukkan NIK anak" required>
+																		@error('formData.NIKAnak')
+																				<span class="text-danger">{{ $message }}</span>
+																		@enderror
+																</div>
+																<div class="col-md-6">
+																		<label class="form-label">Penghasilan</label>
+																		<input type="number" wire:model="formData.Penghasilan" class="form-control"
+																				placeholder="Masukkan penghasilan (angka)" required step="0.01" min="0">
+																		@error('formData.Penghasilan')
+																				<span class="text-danger">{{ $message }}</span>
+																		@enderror
+																</div>
+														@elseif ($surat->kode === 'SKL')
+																<h4>Data Pemohon</h4>
+																<div class="col-md-6">
+																		<label class="form-label">NIK Pemohon</label>
+																		<input type="text" class="form-control"
+																				value="{{ Auth::guard('penduduk')->check() ? Auth::guard('penduduk')->user()->nik : '' }}" readonly
+																				required>
+																		@error('formData.NIKPemohon')
+																				<span class="text-danger">{{ $message }}</span>
+																		@enderror
+																</div>
+																<h4>Data Anak</h4>
+																<div class="col-md-6">
+																		<label class="form-label">NIK Anak</label>
+																		<input type="text" wire:model="formData.NIKAnak" class="form-control"
+																				placeholder="Masukkan NIK anak" required>
+																		@error('formData.NIKAnak')
+																				<span class="text-danger">{{ $message }}</span>
+																		@enderror
+																</div>
+																<h4>Data Orang Tua</h4>
+																<div class="col-md-6">
+																		<label class="form-label">NIK Ayah</label>
+																		<input type="text" wire:model="formData.NIKAyah" class="form-control"
+																				placeholder="Masukkan NIK ayah" required>
+																		@error('formData.NIKAyah')
+																				<span class="text-danger">{{ $message }}</span>
+																		@enderror
+																</div>
+																<div class="col-md-6">
+																		<label class="form-label">NIK Ibu</label>
+																		<input type="text" wire:model="formData.NIKIbu" class="form-control" placeholder="Masukkan NIK ibu"
+																				required>
+																		@error('formData.NIKIbu')
+																				<span class="text-danger">{{ $message }}</span>
+																		@enderror
 																</div>
 														@else
 																@foreach ($fields as $key => $value)
@@ -98,42 +117,42 @@
 																										@if (stripos($subKey, 'Penghasilan') !== false) required step="0.01" min="0" @endif>
 																								@error("formData.{$key}.{$subKey}")
 																										<span class="text-danger">{{ $message }}</span>
-																						@endif
-																</div>
+																								@enderror
+																						</div>
+																				@endforeach
+																		@elseif (is_string($value))
+																				<div class="col-md-6">
+																						<label
+																								class="form-label">{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $value)) }}</label>
+																						<input
+																								type="{{ stripos($value, 'Penghasilan') !== false ? 'number' : (stripos(strtolower($value), 'tanggal') !== false ? 'date' : 'text') }}"
+																								wire:model="formData.{{ $value }}" class="form-control"
+																								placeholder="{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $value)) }}"
+																								@if (stripos($value, 'Penghasilan') !== false) required step="0.01" min="0" @endif>
+																						@error("formData.{$value}")
+																								<span class="text-danger">{{ $message }}</span>
+																						@enderror
+																				</div>
+																		@endif
 																@endforeach
-														@elseif (is_string($value))
-																<div class="col-md-6">
-																		<label
-																				class="form-label">{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $value)) }}</label>
-																		<input
-																				type="{{ stripos($value, 'Penghasilan') !== false ? 'number' : (stripos(strtolower($value), 'tanggal') !== false ? 'date' : 'text') }}"
-																				wire:model="formData.{{ $value }}" class="form-control"
-																				placeholder="{{ ucwords(preg_replace_callback('/([A-Z])/', fn($matches) => ' ' . strtolower($matches[1]), $value)) }}"
-																				@if (stripos($value, 'Penghasilan') !== false) required step="0.01" min="0" @endif>
-																		@error("formData.{$value}")
-																				<span class="text-danger">{{ $message }}</span>
-																				@endif
-																		</div>
-																		@endif
-																		@endforeach
-																		@endif
+														@endif
 
-																		<div class="col-md-6">
-																				<label class="form-label">Nomor WhatsApp</label>
-																				<input type="text" wire:model="whatsapp_number" class="form-control"
-																						placeholder="Masukkan nomor WhatsApp (opsional)">
-																				@error('whatsapp_number')
-																						<span class="text-danger">{{ $message }}</span>
-																						@endif
-																				</div>
+														<div class="col-md-6">
+																<label class="form-label">Nomor WhatsApp</label>
+																<input type="text" wire:model="whatsapp_number" class="form-control"
+																		placeholder="Masukkan nomor WhatsApp (opsional)">
+																@error('whatsapp_number')
+																		<span class="text-danger">{{ $message }}</span>
+																@enderror
+														</div>
 
-																				<div class="col-md-12 text-center">
-																						<button type="submit" class="btn btn-primary">Ajukan Surat</button>
-																				</div>
-																		</div>
-																		</form>
+														<div class="col-md-12 text-center">
+																<button type="submit" class="btn btn-primary">Ajukan Surat</button>
 														</div>
-														</div>
-														</div>
-														</section><!-- /Contact Section -->
-														</div>
+												</div>
+										</form>
+								</div>
+						</div>
+				</div>
+		</section><!-- /Contact Section -->
+</div>

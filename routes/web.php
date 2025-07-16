@@ -88,5 +88,9 @@ Route::get('generate-storage', function () {
     Artisan::call('storage:link');
     return 'Storage linked successfully!';
 });
+Route::get('migrate-fresh', function () {
+    Artisan::call('migrate:fresh --seed');
+    return 'Migrate fresh dan seeder berhasil dijalankan!';
+});
 
 require __DIR__ . '/auth.php';

@@ -55,7 +55,7 @@
 
 <body>
 		<div style="position: relative">
-				<img style="position: absolute; height: 100px;" src="https://diratiara.my.id/surat/image/logo.png" alt="Logo"
+				<img style="position: absolute; height: 100px;" src="https://jukubatu.my.id/surat/image/logo.png" alt="Logo"
 						width="80">
 				<br>
 				<div class="center">
@@ -92,79 +92,93 @@
 								<td style="width: 170px">MENERANGKAN BAHWA</td>
 								<td>: Saudara</td>
 						</tr>
-						<tr>
-								<td>Nama</td>
-								<td style="font-weight: bold">: {{ $data['OrangTua']['Nama'] }}</td>
-						</tr>
-						<tr>
-								<td>Nomor NIK</td>
-								<td>: {{ $data['OrangTua']['NIK'] }}</td>
-						</tr>
-						<tr>
-								<td>Tempat / Tgl. Lahir</td>
-								<td>: {{ $data['OrangTua']['TempatLahir'] }}, {{ $data['OrangTua']['TanggalLahir'] }}</td>
-						</tr>
-						<tr>
-								<td>Jenis Kelamin</td>
-								<td>: {{ $data['OrangTua']['JenisKelamin'] }}</td>
-						</tr>
-						<tr>
-								<td>Warga Negara</td>
-								<td>: Indonesia</td>
-						</tr>
-						<tr>
-								<td>Agama</td>
-								<td>: {{ $data['OrangTua']['Agama'] }}</td>
-						</tr>
-						<tr>
-								<td>Pekerjaan</td>
-								<td>: {{ $data['OrangTua']['Pekerjaan'] }}</td>
-						</tr>
-						<tr>
-								<td>Alamat</td>
-								<td>: {{ $data['OrangTua']['Alamat'] }}</td>
-						</tr>
+						@php
+								$pemohon = \App\Models\Penduduk::find($permohonan->id_penduduk);
+						@endphp
+						@if ($pemohon)
+								<tr>
+										<td>Nama</td>
+										<td style="font-weight: bold">: {{ $pemohon->nama }}</td>
+								</tr>
+								<tr>
+										<td>Nomor NIK</td>
+										<td>: {{ $pemohon->nik }}</td>
+								</tr>
+								<tr>
+										<td>Tempat / Tgl. Lahir</td>
+										<td>: {{ $pemohon->tempat_lahir }}, {{ $pemohon->tanggal_lahir }}</td>
+								</tr>
+								<tr>
+										<td>Jenis Kelamin</td>
+										<td>: {{ $pemohon->jenis_kelamin }}</td>
+								</tr>
+								<tr>
+										<td>Warga Negara</td>
+										<td>: Indonesia</td>
+								</tr>
+								<tr>
+										<td>Agama</td>
+										<td>: {{ $pemohon->agama }}</td>
+								</tr>
+								<tr>
+										<td>Pekerjaan</td>
+										<td>: {{ $pemohon->pekerjaan }}</td>
+								</tr>
+								<tr>
+										<td>Alamat</td>
+										<td>: {{ $pemohon->alamat }}</td>
+								</tr>
+						@endif
 				</table>
 
-				Benar adalah orang tua dari
 				<table class="table">
 						<tr>
-								<td style="width: 170px">Nama</td>
-								<td style="font-weight: bold">: {{ $data['Anak']['Nama'] }}</td>
+								<td style="width: 170px">Benar adalah orang tua dari</td>
+								<td>:</td>
 						</tr>
-						<tr>
-								<td>Nomor KTP/NIK</td>
-								<td>: {{ $data['Anak']['NIK'] }}</td>
-						</tr>
-						<tr>
-								<td>Tempat / Tgl. Lahir</td>
-								<td>: {{ $data['Anak']['TempatLahir'] }}, {{ $data['Anak']['TanggalLahir'] }}</td>
-						</tr>
-						<tr>
-								<td>Jenis Kelamin</td>
-								<td>: {{ $data['Anak']['JenisKelamin'] }}</td>
-						</tr>
-						<tr>
-								<td>Warga Negara</td>
-								<td>: Indonesia</td>
-						</tr>
-						<tr>
-								<td>Agama</td>
-								<td>: {{ $data['Anak']['Agama'] }}</td>
-						</tr>
-						<tr>
-								<td>Pekerjaan</td>
-								<td>: {{ $data['Anak']['Pekerjaan'] }}</td>
-						</tr>
-						<tr>
-								<td>Alamat KTP</td>
-								<td>: {{ $data['Anak']['AlamatKTP'] }}</td>
-						</tr>
+						{{-- @php
+								$anak = \App\Models\Penduduk::where('nik', $data['NIKAnak'])->first();
+						@endphp --}}
+						{{-- @dd($anak) --}}
+						@if ($anak)
+								<tr>
+										<td>Nama</td>
+										<td style="font-weight: bold">: {{ $anak->nama }}</td>
+								</tr>
+								<tr>
+										<td>Nomor NIK</td>
+										<td>: {{ $anak->nik }}</td>
+								</tr>
+								<tr>
+										<td>Tempat / Tgl. Lahir</td>
+										<td>: {{ $anak->tempat_lahir }}, {{ $anak->tanggal_lahir }}</td>
+								</tr>
+								<tr>
+										<td>Jenis Kelamin</td>
+										<td>: {{ $anak->jenis_kelamin }}</td>
+								</tr>
+								<tr>
+										<td>Warga Negara</td>
+										<td>: Indonesia</td>
+								</tr>
+								<tr>
+										<td>Agama</td>
+										<td>: {{ $anak->agama }}</td>
+								</tr>
+								<tr>
+										<td>Pekerjaan</td>
+										<td>: {{ $anak->pekerjaan }}</td>
+								</tr>
+								<tr>
+										<td>Alamat KTP</td>
+										<td>: {{ $anak->alamat }}</td>
+								</tr>
+						@endif
 				</table>
 
 				Yang tersebut di atas adalah Penduduk Kampung Juku Batu dan berdasarkan data dan pengamatan kami, orang tersebut
-				adalah
-				<span class="bold" style="text-transform: capitalize;">keluarga tidak mampu</span>, dengan penghasilan sebesar
+				adalah <span class="bold" style="text-transform: capitalize;">keluarga tidak mampu</span>, dengan penghasilan
+				sebesar
 				<span class="bold">Rp {{ number_format($data['Penghasilan'], 0, ',', '.') }}</span>.
 
 				<br />
@@ -179,7 +193,7 @@
 								<td style="width: 30%; text-align: center;">
 										<div style="margin-bottom: 1rem; text-align: left;">
 												<span>Dikeluarkan di: Juku Batu</span><br>
-												<span>Pada Tanggal: {{ $data['TanggalPenerbitan'] }}</span><br><br>
+												<span>Pada Tanggal: {{ now()->format('d-m-Y') }}</span><br><br>
 												<span>Kepala Kampung Juku Batu,</span>
 										</div>
 										<div style="text-align: center;">

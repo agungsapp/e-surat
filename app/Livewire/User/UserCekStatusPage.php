@@ -22,7 +22,7 @@ class UserCekStatusPage extends Component
             return;
         }
 
-        $permohonan = Permohonan::where('nomor_surat', $this->nomorSurat)->first();
+        $permohonan = Permohonan::where('kode_surat', $this->nomorSurat)->first();
 
         if ($permohonan) {
             $this->status = $permohonan->status;

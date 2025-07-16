@@ -59,7 +59,7 @@
 																		<td>{{ $permohonan->surat->nama }}</td>
 																		<td>
 																				<table class="table-sm table">
-																						@if ($permohonan->surat->kode === 'SKTM')
+																						{{-- @if ($permohonan->surat->kode === 'SKTM')
 																								<!-- Untuk SKTM, tampilkan data nested -->
 																								<tr>
 																										<th colspan="2"><strong>Data Orang Tua</strong></th>
@@ -99,14 +99,14 @@
 																										<td>{{ $permohonan->data['TanggalPenerbitan'] ?? 'Tidak ada data' }}</td>
 																								</tr>
 																						@else
-																								<!-- Untuk surat lain, tampilkan data datar -->
-																								@foreach ($permohonan->data as $key => $value)
-																										<tr>
-																												<td>{{ ucfirst(str_replace('_', ' ', $key)) }}</td>
-																												<td>{{ $value }}</td>
-																										</tr>
-																								@endforeach
-																						@endif
+																							
+																						@endif --}}
+																						@foreach ($permohonan->data as $key => $value)
+																								<tr>
+																										<td>{{ ucfirst(str_replace('_', ' ', $key)) }}</td>
+																										<td>{{ $value }}</td>
+																								</tr>
+																						@endforeach
 																				</table>
 																		</td>
 																		<td>{{ ucfirst($permohonan->status) }}</td>

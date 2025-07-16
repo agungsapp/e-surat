@@ -48,28 +48,9 @@ class SuratSeeder extends Seeder
                 'deskripsi' => 'Surat Keterangan Tidak Mampu menyatakan seseorang atau keluarga tidak mampu secara ekonomi. Digunakan untuk bantuan sosial, keringanan biaya sekolah, layanan kesehatan gratis, atau keperluan serupa.',
                 'active' => true,
                 'data' => json_encode([
-                    'OrangTua' => [
-                        'Nama' => '',
-                        'NIK' => '',
-                        'TempatLahir' => '',
-                        'TanggalLahir' => '',
-                        'Agama' => '',
-                        'JenisKelamin' => '',
-                        'Pekerjaan' => '',
-                        'Alamat' => '',
-                    ],
-                    'Anak' => [
-                        'Nama' => '',
-                        'NIK' => '',
-                        'TempatLahir' => '',
-                        'TanggalLahir' => '',
-                        'Agama' => '',
-                        'JenisKelamin' => '',
-                        'Pekerjaan' => '',
-                        'AlamatKTP' => '',
-                    ],
+                    'NIKAnak' => '',
                     'Penghasilan' => '',
-                    'TanggalPenerbitan' => '',
+                    // 'TanggalPenerbitan' => '',
                 ]),
             ],
             [
@@ -152,18 +133,10 @@ class SuratSeeder extends Seeder
                 'deskripsi' => 'Surat Keterangan Kelahiran menyatakan kelahiran seseorang yang sah, mencakup data anak dan orang tua. Digunakan untuk keperluan administrasi seperti akta kelahiran, pendidikan, atau dokumen resmi lainnya.',
                 'active' => true,
                 'data' => json_encode([
-                    'NamaAnak',
-                    'JenisKelaminAnak',
-                    'TempatLahirAnak',
-                    'TanggalLahirAnak',
-                    'AgamaAnak',
-                    'AlamatAnak',
-
-                    'NamaAyah',
-                    'NamaIbu',
-
-                    'TanggalPenerbitan',
-
+                    'NIKAnak' => '',
+                    'NIKAyah' => '',
+                    'NIKIbu' => '',
+                    // 'TanggalPenerbitan' => '',
                 ]),
             ],
             [

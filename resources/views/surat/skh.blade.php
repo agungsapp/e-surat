@@ -54,7 +54,7 @@
 
 <body>
 		<div style="position: relative">
-				<img style="position: absolute; height: 100px;" src="https://diratiara.my.id/surat/image/logo.png" alt="Logo"
+				<img style="position: absolute; height: 100px;" src="https://jukubatu.my.id/surat/image/logo.png" alt="Logo"
 						width="80">
 				<br>
 				<div class="center">

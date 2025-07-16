@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Models\Penduduk;
 use App\Models\Permohonan;
 use Barryvdh\DomPDF\Facade\Pdf;
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
@@ -27,7 +25,6 @@ class SuratService
 
     return ['message' => 'Dokumen berhasil diproses dengan QR code.'];
   }
-
 
   protected function generatePdfWithQR(Permohonan $permohonan)
   {
@@ -53,8 +50,6 @@ class SuratService
     $fileName = "{$kodeSurat}_{$permohonan->id}_{$namaPemohon}_{$tanggalCreatedAt}.pdf";
     $pdfPath = 'documents/' . $fileName;
 
-    // dd($permohonan);
-
     // Ambil tanggal dari updated_at jika ada, jika tidak gunakan created_at
     $tanggal = $permohonan->updated_at ?? $permohonan->created_at;
     $tanggalPenerbitan = Carbon::parse($tanggal)->translatedFormat('d F Y');
@@ -73,18 +68,15 @@ class SuratService
     if ($permohonan->whatsapp_number) {
       $whatsappService = new WhatsAppService();
       $namaSurat = strtoupper($permohonan->surat->nama ?? 'Surat');
-      $nomorSurat = $permohonan->nomor_surat ?? 'Belum ada nomor';
+      $nomorSurat = $permohonan->kode_surat ?? 'Belum ada kode';
       $downloadUrl = asset('storage/' . $pdfPath);
 
       $message = "📄 Permohonan surat *{$namaSurat}* dengan nomor *{$nomorSurat}* telah disetujui dan ditandatangani Kepala Desa. 
-    Silakan unduh dokumenmu di sini: 
-    👉 {$downloadUrl}";
+            Silakan unduh dokumenmu di sini: 
+            👉 {$downloadUrl}";
 
       $whatsappService->sendMessage($permohonan->whatsapp_number, $message);
     }
-
-
-    // Storage::put($pdfPath, $pdf->output());
 
     // Simpan ke disk public
     Storage::disk('public')->put($pdfPath, $pdf->output());
@@ -114,32 +106,42 @@ class SuratService
     $surat = $permohonan->surat;
 
     if ($surat->kode === 'SKTM') {
+      $anak = Penduduk::where('nik', $data['NIKAnak'] ?? '')->first();
+      // dd($anak);
       return [
         'KepalaDesaNama' => 'M. A. Khoirin, S.Pd',
         'KepalaDesaJabatan' => 'Kepala Kampung Juku Batu',
         'KepalaDesaAlamat' => 'Dusun II Kampung Juku Batu',
-        'OrangTua' => [
-          'Nama' => $data['OrangTua']['Nama'] ?? '',
-          'NIK' => $data['OrangTua']['NIK'] ?? '',
-          'TempatLahir' => $data['OrangTua']['TempatLahir'] ?? '',
-          'TanggalLahir' => $data['OrangTua']['TanggalLahir'] ?? '',
-          'Agama' => $data['OrangTua']['Agama'] ?? '',
-          'JenisKelamin' => $data['OrangTua']['JenisKelamin'] ?? '',
-          'Pekerjaan' => $data['OrangTua']['Pekerjaan'] ?? '',
-          'Alamat' => $data['OrangTua']['Alamat'] ?? '',
-        ],
-        'Anak' => [
-          'Nama' => $data['Anak']['Nama'] ?? '',
-          'NIK' => $data['Anak']['NIK'] ?? '',
-          'TempatLahir' => $data['Anak']['TempatLahir'] ?? '',
-          'TanggalLahir' => $data['Anak']['TanggalLahir'] ?? '',
-          'Agama' => $data['Anak']['Agama'] ?? '',
-          'JenisKelamin' => $data['Anak']['JenisKelamin'] ?? '',
-          'Pekerjaan' => $data['Anak']['Pekerjaan'] ?? '',
-          'AlamatKTP' => $data['Anak']['AlamatKTP'] ?? '',
-        ],
+        'Anak' => $anak ? [
+          'Nama' => $anak->nama_lengkap ?? '',
+          'NIK' => $anak->nik ?? '',
+          'TempatLahir' => $anak->tempat_lahir ?? '',
+          'TanggalLahir' => $anak->tanggal_lahir ?? '',
+          'Agama' => $anak->agama ?? '',
+          'JenisKelamin' => $anak->jenis_kelamin ?? '',
+          'Pekerjaan' => $anak->pekerjaan ?? '',
+          'AlamatKTP' => $anak->alamat ?? '',
+        ] : [],
         'Penghasilan' => $data['Penghasilan'] ?? '',
-        'TanggalPenerbitan' => $data['TanggalPenerbitan'] ?? now()->format('d-m-Y'),
+      ];
+    } elseif ($surat->kode === 'SKL') {
+      $anak = Penduduk::where('nik', $data['NIKAnak'] ?? '')->first();
+      $ayah = Penduduk::where('nik', $data['NIKAyah'] ?? '')->first();
+      $ibu = Penduduk::where('nik', $data['NIKIbu'] ?? '')->first();
+      return [
+        'KepalaDesaNama' => 'M. A. Khoirin, S.Pd',
+        'KepalaDesaJabatan' => 'Kepala Kampung Juku Batu',
+        'KepalaDesaAlamat' => 'Dusun II Kampung Juku Batu',
+        'Anak' => $anak ? [
+          'Nama' => $anak->nama_lengkap ?? '',
+          'JenisKelamin' => $anak->jenis_kelamin ?? '',
+          'TempatLahir' => $anak->tempat_lahir ?? '',
+          'TanggalLahir' => $anak->tanggal_lahir ?? '',
+          'Agama' => $anak->agama ?? '',
+          'Alamat' => $anak->alamat ?? '',
+        ] : [],
+        'Ayah' => $ayah ? ['NamaAyah' => $ayah->nama_lengkap ?? ''] : ['NamaAyah' => ''],
+        'Ibu' => $ibu ? ['NamaIbu' => $ibu->nama_lengkap ?? ''] : ['NamaIbu' => ''],
       ];
     } else {
       $mappedData = [];
