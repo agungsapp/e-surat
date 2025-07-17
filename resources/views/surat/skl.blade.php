@@ -100,34 +100,35 @@
 				<table class="table">
 						<tr>
 								<td>Nama</td>
-								<td style="font-weight: bold;">: {{ $data['NamaAnak'] }}</td>
+								<td style="font-weight: bold;">: {{ $anak->nama_lengkap }}</td>
 						</tr>
 						<tr>
 								<td>Jenis Kelamin</td>
-								<td>: {{ $data['JenisKelaminAnak'] }}</td>
+								<td>: {{ $anak->jenis_kelamin == 'L' ? 'Laki - Laki' : 'Perempuan' }}</td>
 						</tr>
 						<tr>
 								<td>Tempat / Tgl. Lahir</td>
-								<td>: {{ $data['TempatLahirAnak'] }}, {{ $data['TanggalLahirAnak'] }}</td>
+								<td>: {{ $anak->tempat_lahir }},
+										{{ \Carbon\Carbon::parse($anak->tanggal_lahir)->translatedFormat('d F Y') }}</td>
 						</tr>
 						<tr>
 								<td>Agama</td>
-								<td>: {{ $data['AgamaAnak'] }}</td>
+								<td>: {{ $anak->agama }}</td>
 						</tr>
 						<tr>
 								<td>Alamat</td>
-								<td>: {{ $data['AlamatAnak'] }}</td>
+								<td>: {{ $anak->alamat }}</td>
 						</tr>
 				</table>
 				Orang tersebut adalah anak dari:
 				<table class="table">
 						<tr>
 								<td>Nama Ayah</td>
-								<td style="font-weight: bold;">: {{ $data['NamaAyah'] }}</td>
+								<td style="font-weight: bold;">: {{ $ayah->nama_lengkap }}</td>
 						</tr>
 						<tr>
 								<td>Nama Ibu</td>
-								<td style="font-weight: bold;">: {{ $data['NamaIbu'] }}</td>
+								<td style="font-weight: bold;">: {{ $ibu->nama_lengkap }}</td>
 						</tr>
 
 
@@ -144,7 +145,7 @@
 								<td style="width: 30%; text-align: center;">
 										<div style="margin-bottom: 1rem; text-align: left;">
 												<span>Dikeluarkan di: Juku Batu</span><br>
-												<span>Pada Tanggal: {{ $data['TanggalPenerbitan'] }}</span><br><br>
+												<span>Pada Tanggal: {{ $tanggalPenerbitan }}</span><br><br>
 												<span>Kepala Kampung Juku Batu,</span>
 										</div>
 										<div style="text-align: center;">

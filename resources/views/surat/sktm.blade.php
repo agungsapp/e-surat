@@ -92,25 +92,26 @@
 								<td style="width: 170px">MENERANGKAN BAHWA</td>
 								<td>: Saudara</td>
 						</tr>
-						@php
+						{{-- @php
 								$pemohon = \App\Models\Penduduk::find($permohonan->id_penduduk);
-						@endphp
-						@if ($pemohon)
+						@endphp --}}
+						@if ($penduduk)
 								<tr>
 										<td>Nama</td>
-										<td style="font-weight: bold">: {{ $pemohon->nama }}</td>
+										<td style="font-weight: bold">: {{ $penduduk->nama_lengkap }}</td>
 								</tr>
 								<tr>
 										<td>Nomor NIK</td>
-										<td>: {{ $pemohon->nik }}</td>
+										<td>: {{ $penduduk->nik }}</td>
 								</tr>
 								<tr>
 										<td>Tempat / Tgl. Lahir</td>
-										<td>: {{ $pemohon->tempat_lahir }}, {{ $pemohon->tanggal_lahir }}</td>
+										<td>: {{ $penduduk->tempat_lahir }},
+												{{ \Carbon\Carbon::parse($penduduk->tanggal_lahir)->translatedFormat('d F Y') }}</td>
 								</tr>
 								<tr>
 										<td>Jenis Kelamin</td>
-										<td>: {{ $pemohon->jenis_kelamin }}</td>
+										<td>: {{ $penduduk->jenis_kelamin == 'L' ? 'Laki - Laki' : 'Perempuan' }}</td>
 								</tr>
 								<tr>
 										<td>Warga Negara</td>
@@ -118,15 +119,15 @@
 								</tr>
 								<tr>
 										<td>Agama</td>
-										<td>: {{ $pemohon->agama }}</td>
+										<td>: {{ $penduduk->agama }}</td>
 								</tr>
 								<tr>
 										<td>Pekerjaan</td>
-										<td>: {{ $pemohon->pekerjaan }}</td>
+										<td>: {{ $penduduk->pekerjaan }}</td>
 								</tr>
 								<tr>
 										<td>Alamat</td>
-										<td>: {{ $pemohon->alamat }}</td>
+										<td>: {{ $penduduk->alamat }}</td>
 								</tr>
 						@endif
 				</table>
@@ -143,7 +144,7 @@
 						@if ($anak)
 								<tr>
 										<td>Nama</td>
-										<td style="font-weight: bold">: {{ $anak->nama }}</td>
+										<td style="font-weight: bold">: {{ $anak->nama_lengkap }}</td>
 								</tr>
 								<tr>
 										<td>Nomor NIK</td>
@@ -151,11 +152,12 @@
 								</tr>
 								<tr>
 										<td>Tempat / Tgl. Lahir</td>
-										<td>: {{ $anak->tempat_lahir }}, {{ $anak->tanggal_lahir }}</td>
+										<td>: {{ $anak->tempat_lahir }},
+												{{ \Carbon\Carbon::parse($anak->tanggal_lahir)->translatedFormat('d F Y') }}</td>
 								</tr>
 								<tr>
 										<td>Jenis Kelamin</td>
-										<td>: {{ $anak->jenis_kelamin }}</td>
+										<td>: {{ $anak->jenis_kelamin == 'L' ? 'Laki - Laki' : 'Perempuan' }}</td>
 								</tr>
 								<tr>
 										<td>Warga Negara</td>
@@ -193,7 +195,7 @@
 								<td style="width: 30%; text-align: center;">
 										<div style="margin-bottom: 1rem; text-align: left;">
 												<span>Dikeluarkan di: Juku Batu</span><br>
-												<span>Pada Tanggal: {{ now()->format('d-m-Y') }}</span><br><br>
+												<span>Pada Tanggal: {{ $tanggalPenerbitan }}</span><br><br>
 												<span>Kepala Kampung Juku Batu,</span>
 										</div>
 										<div style="text-align: center;">

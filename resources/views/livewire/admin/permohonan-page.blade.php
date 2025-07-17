@@ -42,6 +42,7 @@
 														<tr>
 																<th scope="col">#</th>
 																<th scope="col">Nomor</th>
+																<th scope="col">Nama</th>
 																<th scope="col">Whatsapp</th>
 																<th scope="col">Surat</th>
 																<th scope="col">Data</th>
@@ -55,6 +56,7 @@
 																<tr>
 																		<th scope="row">{{ $index + 1 }}</th>
 																		<td>{{ $permohonan->nomor_surat }}</td>
+																		<td>{{ $permohonan->penduduk?->nama_lengkap ?? 'undefined' }}</td>
 																		<td>{{ $permohonan->whatsapp_number }}</td>
 																		<td>{{ $permohonan->surat->nama }}</td>
 																		<td>

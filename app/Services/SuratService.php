@@ -12,6 +12,9 @@ class SuratService
 {
   public function processAfterApproval(Permohonan $permohonan)
   {
+
+    // $surat = $permohonan->surat;
+    // dd($data['NIKAnak']);
     // Generate nomor surat
     $permohonan->generateNomorSurat();
 
@@ -28,6 +31,11 @@ class SuratService
 
   protected function generatePdfWithQR(Permohonan $permohonan)
   {
+
+    // dd($permohonan);
+
+
+    // dd($data);
     // Generate URL untuk verifikasi dokumen
     $verificationUrl = url('/verify-document/' . $permohonan->id);
 
@@ -56,14 +64,33 @@ class SuratService
 
     $penduduk = Penduduk::find($permohonan->id_penduduk);
 
-    // Generate PDF dengan QR code dan data dinamis
-    $pdf = Pdf::loadView($template, [
+    $kirim = [
       'penduduk' => $penduduk,
       'tanggalPenerbitan' => $tanggalPenerbitan,
       'permohonan' => $permohonan,
       'qrBase64' => $qrBase64,
       'data' => $this->mapStaticData($permohonan),
-    ]);
+    ];
+
+    if ($permohonan->surat->kode == 'SKTM') {
+      $data = is_string($permohonan->data) ? json_decode($permohonan->data, true) : $permohonan->data;
+      $anak = Penduduk::where('nik', $data['NIKAnak'])->first();
+      $kirim['anak'] = $anak;
+    } elseif ($permohonan->surat->kode == 'SKL') {
+      $data = is_string($permohonan->data) ? json_decode($permohonan->data, true) : $permohonan->data;
+      $kirim['anak'] = Penduduk::where('nik', $data['NIKAnak'])->first();
+      $kirim['ayah'] = Penduduk::where('nik', $data['NIKAyah'])->first();
+      $kirim['ibu'] = Penduduk::where('nik', $data['NIKIbu'])->first();
+      // $kirim[]
+    } else {
+    }
+
+    // dd($kirim);
+
+    // dd($kirim);
+
+    // Generate PDF dengan QR code dan data dinamis
+    $pdf = Pdf::loadView($template, $kirim);
 
     if ($permohonan->whatsapp_number) {
       $whatsappService = new WhatsAppService();

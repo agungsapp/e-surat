@@ -39,7 +39,7 @@ class PermohonanPage extends Component
 
     public function updatePermohonans()
     {
-        $query = Permohonan::with('surat');
+        $query = Permohonan::with(['penduduk', 'surat']);
 
         if ($this->statusFilter) {
             $query->where('status', $this->statusFilter);
